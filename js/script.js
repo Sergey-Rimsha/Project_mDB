@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         changeFilms: function () {
             const films = document.querySelector('.promo__interactive-list');
 
-            this.movies.sort();
+            this.sortMovies();
             films.innerHTML = '';
 
             this.movies.forEach((item, i) => {
@@ -42,16 +42,39 @@ document.addEventListener('DOMContentLoaded', () => {
                     </li>`;
             });
 
+            document.querySelectorAll('.delete').forEach((btn, i) => {
+                btn.addEventListener('click', () => {
+                    btn.parentElement.remove();
+                    this.movies.splice(i, 1);
+                    this.changeFilms();
+                    this.sortMovies();
+                });
+            });
+
         },
         pushFilms: function () {
 
-            const inputValue = document.querySelector('.adding__input').value;
-            if (inputValue.length > 21) {
-                let strNew = inputValue.slice(0, 21);
-                movieDB.movies.push(strNew + '...');
-            } else {
-                movieDB.movies.push(inputValue);
+            const input = document.querySelector('.adding__input');
+            const checkBox = document.querySelector('[type="checkbox"]');
+
+            if (checkBox.checked) {
+                console.log(`Добовляем любимый фильм ${input.value}`);
             }
+
+            checkBox.checked = false;
+             
+            if (input.value.length > 21) {
+                let strNew = input.value.slice(0, 21);
+                this.movies.push(strNew + '...');
+            } else {
+                if (input.value !== '') {
+                    this.movies.push(input.value);
+                }
+            }
+            input.value = '';
+        },
+        sortMovies: function () {
+            this.movies.sort();
         }
     };
 
@@ -60,32 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         movieDB.pushFilms();
         movieDB.changeFilms();
-
-
-    });
-
-    const delFilm = document.querySelectorAll('.delete');
-    //console.log(delFilm);
-    delFilm.forEach((btn, i) => {
-        console.log(btn.parentElement);
-        btn.addEventListener('click', () => {
-            btn.parentElement.remove();
-            movieDB.movies.splice(i, 1);
-            console.log(btn);
-            movieDB.pushFilms();
-            movieDB.changeFilms();
-        });
     });
 
     movieDB.hidePromo();
     movieDB.changeGenre();
     movieDB.changeImage();
     movieDB.changeFilms();
-    //movieDB.pushFilms();
-
-
-
-
 
 
 });
